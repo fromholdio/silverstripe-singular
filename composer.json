@@ -1,0 +1,27 @@
+{
+	"name": "fromholdio/silverstripe-singular",
+	"type": "silverstripe-vendormodule",
+	"description": "A SilverStripe extension to apply to Page classes that should only be allowed to appear in a site tree once.",
+	"license": "BSD-3-Clause",
+	"keywords": ["silverstripe", "site tree", "cms", "singular"],
+	"homepage": "https://github.com/fromholdio/silverstripe-singular",
+	"support": {
+		"issues": "https://github.com/fromholdio/silverstripe-singular/issues"
+	},
+	"authors": [{
+		"name": "Luke Fromhold",
+		"homepage": "https://fromhold.io"
+	}],
+	"require": {
+		"php": ">=5.6",
+		"silverstripe/vendor-plugin": "^1.0",
+		"silverstripe/cms": "^4.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Fromholdio\\Singular\\": "src/"
+		}
+	},
+	"prefer-stable": true,
+	"minimum-stability": "dev"
+}
