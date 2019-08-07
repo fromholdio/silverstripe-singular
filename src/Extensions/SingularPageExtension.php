@@ -1,6 +1,6 @@
 <?php
 
-namespace Innoweb\CVC\Core\Extensions;
+namespace Fromholdio\Singular\Extensions;
 
 use SilverStripe\CMS\Model\SiteTreeExtension;
 use SilverStripe\Core\ClassInfo;
