@@ -2,31 +2,14 @@
 
 namespace Fromholdio\Singular\Extensions;
 
-use SilverStripe\CMS\Model\SiteTreeExtension;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DB;
+use Symbiote\Multisites\Model\Site;
 
-class SingularPageExtension extends SiteTreeExtension
+class MultisitesSingularPageExtension extends SingularPageExtension
 {
-    private static $forced_url_segment;
-    private static $readonly_url_segment;
-    private static $require_default_enabled;
-    private static $default_title;
-
-    public function updateCMSFields(FieldList $fields)
-    {
-        $urlSegment = $this->getOwner()->getForcedURLSegment();
-        if ($urlSegment) {
-            $this->getOwner()->URLSegment = $urlSegment;
-        }
-        $readOnly = $this->getOwner()->getIsReadonlyURLSegment();
-        if ($urlSegment || $readOnly) {
-            $urlSegmentField = $fields->dataFieldByName('URLSegment');
-            $urlSegmentField->setReadonly(true);
-        }
-    }
-
     public function requireDefaultRecords()
     {
         $enabled = $this->getOwner()->getIsRequiredDefaultEnabled();
@@ -35,21 +18,28 @@ class SingularPageExtension extends SiteTreeExtension
         }
 
         $class = get_class($this->getOwner());
-        $page = $class::get();
-        if ($page->count() < 1) {
-            $title = $this->getOwner()->config()->get('default_title');
-            if (!$title) {
-                $title = 'New ' . $this->getOwner()->i18n_singular_name();
+        $sites = Site::get();
+
+        foreach ($sites as $site) {
+            $existingPage = $class::get()->filter('SiteID', $site->ID)->first();
+            if (!$existingPage || !$existingPage->exists()) {
+                $title = $this->getOwner()->config()->get('default_title');
+                if (!$title) {
+                    $title = 'New ' . $this->getOwner()->i18n_singular_name();
+                }
+                $page = $class::create();
+                $page->Title = $title;
+                $page->SiteID = $site->ID;
+                $page->ParentID = $site->ID;
+                $page->write();
+                $page->publishSingle();
+                $page->flushCache();
+                DB::alteration_message(
+                    'Added new ' . $this->getOwner()->i18n_singular_name() . ' titled "'
+                    . $title . '" to site "' . $site->Title . '"',
+                    'created'
+                );
             }
-            $page = $class::create();
-            $page->Title = $title;
-            $page->write();
-            $page->publishSingle();
-            $page->flushCache();
-            DB::alteration_message(
-                'Added new ' . $this->getOwner()->i18n_singular_name() . ' titled "' . $title . '"',
-                'created'
-            );
         }
     }
 
@@ -92,7 +82,7 @@ class SingularPageExtension extends SiteTreeExtension
     {
         $class = get_class($this->getOwner());
         if ($class && ClassInfo::exists($class)) {
-            $page = $class::get()->first();
+            $page = $class::get()->filter('SiteID', $this->SiteID)->first();
             if ($page && $page->exists()) {
                 return false;
             }
