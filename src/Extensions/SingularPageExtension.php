@@ -2,6 +2,7 @@
 
 namespace Fromholdio\Singular\Extensions;
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\SiteTreeExtension;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\FieldList;
@@ -17,9 +18,6 @@ class SingularPageExtension extends SiteTreeExtension
     public function updateCMSFields(FieldList $fields)
     {
         $urlSegment = $this->getOwner()->getForcedURLSegment();
-        if ($urlSegment) {
-            $this->getOwner()->URLSegment = $urlSegment;
-        }
         $readOnly = $this->getOwner()->getIsReadonlyURLSegment();
         if ($urlSegment || $readOnly) {
             $urlSegmentField = $fields->dataFieldByName('URLSegment');
@@ -57,7 +55,23 @@ class SingularPageExtension extends SiteTreeExtension
     {
         $urlSegment = $this->getOwner()->getForcedURLSegment();
         if ($urlSegment) {
-            $this->getOwner()->URLSegment = $urlSegment;
+            $urlParts = explode('/', $urlSegment);
+            if (count($urlParts) > 1) {
+                $parentID = 0;
+                foreach ($urlParts as $urlPart) {
+                    $parent = SiteTree::get()->filter([
+                        'ParentID' => $parentID,
+                        'URLSegment' => $urlPart
+                    ])->first();
+                    if ($parent && $parent->exists() && $parent->ID !== $this->getOwner()->ID) {
+                        $parentID = $parent->ID;
+                    }
+                }
+                $this->getOwner()->ParentID = $parentID;
+                $this->getOwner()->URLSegment = $urlPart;
+            } else {
+                $this->getOwner()->URLSegment = $urlSegment;
+            }
         }
     }
 
