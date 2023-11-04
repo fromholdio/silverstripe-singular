@@ -82,7 +82,7 @@ class MultisitesSingularPageExtension extends SingularPageExtension
     {
         $class = get_class($this->getOwner());
         if ($class && ClassInfo::exists($class)) {
-            $page = $class::get()->filter('SiteID', $this->SiteID)->first();
+            $page = $class::get()->filter('SiteID', $this->getOwner()->SiteID)->first();
             if ($page && $page->exists()) {
                 return false;
             }
