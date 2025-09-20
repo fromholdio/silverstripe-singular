@@ -2,9 +2,7 @@
 
 namespace Fromholdio\Singular\Extensions;
 
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DB;
 use Fromholdio\ConfiguredMultisites\Model\Site;
 

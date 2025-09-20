@@ -3,12 +3,12 @@
 namespace Fromholdio\Singular\Extensions;
 
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\CMS\Model\SiteTreeExtension;
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DB;
 
-class SingularPageExtension extends SiteTreeExtension
+class SingularPageExtension extends Extension
 {
     private static $forced_url_segment;
     private static $readonly_url_segment;
@@ -25,7 +25,7 @@ class SingularPageExtension extends SiteTreeExtension
         }
     }
 
-    public function requireDefaultRecords()
+    public function onRequireDefaultRecords()
     {
         $enabled = $this->getOwner()->getIsRequiredDefaultEnabled();
         if (!$enabled) {

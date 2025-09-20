@@ -4,7 +4,9 @@ A SilverStripe extension to apply to `Page` classes that should only be allowed 
 
 ## Requirements
 
-* [silverstripe-cms](https://github.com/silverstripe/silverstripe-cms) ^4 or ^5
+* [silverstripe-cms](https://github.com/silverstripe/silverstripe-cms) ^6.x
+
+(See branch 1.x for Silverstripe v4 & 5 support.)
 
 ## Installation
 
