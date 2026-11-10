@@ -8,7 +8,7 @@ use Fromholdio\ConfiguredMultisites\Model\Site;
 
 class ConfiguredMultisitesSingularPageExtension extends SingularPageExtension
 {
-    public function requireDefaultRecords()
+    public function onRequireDefaultRecords()
     {
         $enabled = $this->getOwner()->getIsRequiredDefaultEnabled();
         if (!$enabled) {
